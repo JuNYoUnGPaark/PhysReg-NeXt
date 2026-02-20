@@ -6,7 +6,23 @@ This repository implements the methodology proposed in the paper "Physics-Guided
 
 
 ## Paper Overview
-**Abstract**: 
+**Abstract**: Deep learning-based Human Activity Recognition (HAR)
+with wearable IMUs often struggles with generalization due to the
+reliance on dataset-specific statistics rather than consistent motion
+dynamics. We propose a Physics-Guided Auxiliary Learning
+framework built on a novel Multi-Scale NeXt-TCN backbone. NeXt-
+TCN combines multi-scale depthwise-separable temporal convolutions
+and large-kernel context modules to capture both shortterm
+transitions and long-range dependencies with high efficiency.
+During training only, a lightweight physics-guided auxiliary branch
+enforces kinematic constraints derived from gravity alignment,
+complementary filtering, and rigid-body dynamics to encourage
+physically consistent feature representations; this improves robustness
+without increasing inference cost. On four public datasets (UCI-HAR, WISDM, PAMAP2, MHEALTH), our method
+achieves highly competitive performance (e.g., weighted F1 = 99.27% on PAMAP2) and establishes a state-of-the-art tradeoff
+between accuracy and computational efficiency, remaining compact ( 0.07M) and fast ( 3 ms on a CPU workstation and
+19 ms on a Raspberry Pi 4). These results demonstrate that embedding physical inductive biases via auxiliary supervision
+substantially improves both generalization and representation quality for wearable-sensor HAR.
 
 ## Dataset
 - **UCI-HAR** dataset is available at _https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones_
@@ -30,7 +46,7 @@ pip install -r requirements.txt
 ```
 
 ## Codebase Overview
-- `model.py` - Implementation of the proposed ~.
+- `model.py` - Implementation of the proposed **Physics-Guided Auxiliary Learning framework**.
 The implementation uses PyTorch, Numpy, pandas, scikit-learn, matplotlib, seaborn, and fvcore (for FLOPs analysis).
 
 ## Citing this Repository
