@@ -46,7 +46,7 @@ pip install -r requirements.txt
 ```
 
 ## Codebase Overview
-- `model.py` - Implementation of the proposed **Physics-Guided Auxiliary Learning framework (PhysReg-NeXt).**.
+- `model.py` - Implementation of the proposed **Physics-Guided Auxiliary Learning framework (PhysReg-NeXt)**.
 The implementation uses PyTorch, Numpy, pandas, scikit-learn, matplotlib, seaborn, and fvcore (for FLOPs analysis).
 
 ## Citing this Repository
