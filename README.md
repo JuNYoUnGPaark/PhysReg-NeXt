@@ -1,9 +1,8 @@
-# Learning Physically Consistent Representations for Human Activity Recognition via Modern Temporal Convolutional Network
+# Physics-Guided Auxiliary Learning for Robust HAR via Multi-Scale NeXt-TCN
 
 <p align="center"><img src='./overall_.png'></p>
 
-This repository implements the methodology proposed in the paper "Learning Physically Consistent Representations for Human Activity
-Recognition via Modern Temporal Convolutional Network".
+This repository implements the methodology proposed in the paper "Physics-Guided Auxiliary Learning for Robust HAR via Multi-Scale NeXt-TCN".
 
 
 ## Paper Overview
@@ -39,10 +38,8 @@ The implementation uses PyTorch, Numpy, pandas, scikit-learn, matplotlib, seabor
 If you use this code in your research, please cite:
 
 ```
-@article{Learning Physically Consistent Representations for Human Activity
-Recognition via Modern Temporal Convolutional Network,
-  title = {Learning Physically Consistent Representations for Human Activity
-Recognition via Modern Temporal Convolutional Network},
+@article{Physics-Guided Auxiliary Learning for Robust HAR via Multi-Scale NeXt-TCN,
+  title = {Physics-Guided Auxiliary Learning for Robust HAR via Multi-Scale NeXt-TCN},
   author={JunYoung Park and Myung-Kyu Yi}
   journal={},
   volume={},
