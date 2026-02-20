@@ -1,6 +1,6 @@
 # Learning Physically Consistent Representations for Human Activity Recognition via Modern Temporal Convolutional Network
 
-<p align="center"><img src='./overall.png'></p>
+<p align="center"><img src='./overall_.png'></p>
 
 This repository implements the methodology proposed in the paper "Learning Physically Consistent Representations for Human Activity
 Recognition via Modern Temporal Convolutional Network".
