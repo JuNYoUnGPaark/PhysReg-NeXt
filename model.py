@@ -1,12 +1,14 @@
+from typing import Optional, Tuple, Sequence
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Optional, Tuple
 
 
 """
-    - Physically Regularized Temporal Convolutional Network (PhysReg-TCN)
-    - Author: JunYoungPark and Myung-Kyu Yi
+Physics-Guided Auxiliary Learning framework (PhysReg-NeXt).
+
+Author: JunYoungPark and Myung-Kyu Yi.
 """
 
 
@@ -48,11 +50,15 @@ class MultiScaleConvBlock(nn.Module):
     def __init__(
         self,
         channels: int,
-        kernel_sizes: list[int] = [3, 5, 7],
+        kernel_sizes: Optional[Sequence[int]] = None,
         dilation: int = 1,
         dropout: float = 0.1,
     ):
         super().__init__()
+        if kernel_sizes is None:
+            kernel_sizes = (3, 5, 7)
+        self.kernel_sizes = tuple(kernel_sizes)
+        
         self.branches = nn.ModuleList()
 
         for k in kernel_sizes:
@@ -96,18 +102,21 @@ class MultiScaleConvBlock(nn.Module):
         return self.fusion(multi_scale)  
 
 
-class ModernTCNBlock(nn.Module):
-    """Modern TCN residual block"""
+class NeXtTCNBlock(nn.Module):
+    """Dilated Residual NeXt-TCN block"""
     def __init__(
         self,
         in_channels: int,
         out_channels: int,
-        kernel_sizes: list[int] = [3, 7],
+        kernel_sizes: Optional[Sequence[int]] = None,
         dilation: int = 1,
         dropout: float = 0.1,
     ):
         super().__init__()
-
+        if kernel_sizes is None:
+            kernel_sizes = (3, 7)
+        self.kernel_sizes = tuple(kernel_sizes)
+        
         self.multi_conv1 = MultiScaleConvBlock(
             channels=out_channels,
             kernel_sizes=kernel_sizes,
@@ -115,7 +124,7 @@ class ModernTCNBlock(nn.Module):
             dropout=dropout,
         )
 
-        max_k = max(kernel_sizes) if isinstance(kernel_sizes, list) else kernel_sizes
+        max_k = max(kernel_sizes)
         padding = ((max_k - 1) * dilation) // 2
 
         self.conv2 = DepthwiseSeparableConv1d(
@@ -172,7 +181,7 @@ class SqueezeExcitation1d(nn.Module):
         return x * excitation
 
 
-class LargeKernelConv1d(nn.Module):
+class LargeKernelDWConv1d(nn.Module):
     """Depthwise 1D convolution with a large kernel to capture long-range patterns"""
     def __init__(self, channels: int, kernel_size: int = 21):
         super().__init__()
@@ -193,21 +202,24 @@ class LargeKernelConv1d(nn.Module):
         return out
 
 
-class BaseModernTCNHAR(nn.Module):
-    """Base Modern TCN backbone for sensor-based HAR"""
+class NeXtTCNBackbone(nn.Module):
+    """Base MultiScaleNeXtTCN backbone"""
     def __init__(
         self,
         input_dim: int,
         hidden_dim: int,
         n_layers: int,
         n_classes: int,
-        kernel_sizes: list[int],
+        kernel_sizes: Optional[Sequence[int]] = None,
         large_kernel: int,
         dropout: float,
         use_se: bool,
     ):
         super().__init__()
-
+        if kernel_sizes is None:
+            kernel_sizes = (3, 7)
+        self.kernel_sizes = tuple(kernel_sizes)
+        
         self.input_proj = nn.Conv1d(
             in_channels=input_dim,
             out_channels=hidden_dim,
@@ -215,7 +227,7 @@ class BaseModernTCNHAR(nn.Module):
             bias=False,
         )
 
-        self.large_kernel_conv = LargeKernelConv1d(
+        self.large_kernel_conv = LargeKernelDWConv1d(
             channels=hidden_dim,
             kernel_size=large_kernel,
         )
@@ -224,7 +236,7 @@ class BaseModernTCNHAR(nn.Module):
         for i in range(n_layers):
             dilation = 2 ** i
             self.tcn_blocks.append(
-                ModernTCNBlock(
+                NeXtTCNBlock(
                     in_channels=hidden_dim,
                     out_channels=hidden_dim,
                     kernel_sizes=kernel_sizes,
@@ -233,7 +245,7 @@ class BaseModernTCNHAR(nn.Module):
                 )
             )
 
-        self.final_large_kernel = LargeKernelConv1d(
+        self.final_large_kernel = LargeKernelDWConv1d(
             channels=hidden_dim,
             kernel_size=large_kernel,
         )
@@ -268,8 +280,8 @@ class BaseModernTCNHAR(nn.Module):
         return logits
 
 
-class PhysicsModernTCNHAR(BaseModernTCNHAR):
-    """Physics-guided Modern TCN for HAR"""
+class PhysRegNeXt(NeXtTCNBackbone):
+    """Physics-Guided Auxiliary Learning framework (PhysRegNeXt)"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         hidden_dim = self.head.in_features
