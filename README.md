@@ -21,7 +21,7 @@ physically consistent feature representations; this improves robustness
 without increasing inference cost. On four public datasets (UCI-HAR, WISDM, PAMAP2, MHEALTH), our method
 achieves highly competitive performance (e.g., Macro F1 = 99.27% on PAMAP2) and establishes a state-of-the-art tradeoff
 between accuracy and computational efficiency, remaining compact ( 0.07M) and fast ( 3 ms on a CPU workstation and
-19 ms on a Raspberry Pi 4). These results demonstrate that embedding physical inductive biases via auxiliary supervision
+28 ms on a Raspberry Pi 4). These results demonstrate that embedding physical inductive biases via auxiliary supervision
 substantially improves both generalization and representation quality for wearable-sensor HAR.
 
 ## Dataset
